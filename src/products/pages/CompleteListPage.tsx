@@ -1,13 +1,26 @@
-import { ProductList } from ".."
-
+import { ProductList } from '..';
+import { useProducts } from '../hooks/useProducts';
 
 export const CompleteListPage = () => {
-  return (
-    <div className="flex-col">
-      <h1 className="text-2xl font-bold">Todos los productos</h1>
+	const {
+		// error,
+		// isError,
+		isLoading,
+		products = [],
+		// isFetching,
+	} = useProducts({
+		filterKey: '',
+	});
 
-      <ProductList />
+	return (
+		<div className="flex-col">
+			<h1 className="text-2xl font-bold">Todos los productos</h1>
 
-    </div>
-  )
-}
+			{
+				isLoading && <p>Cargando...</p>
+			}
+
+			<ProductList products={products} />
+		</div>
+	);
+};
