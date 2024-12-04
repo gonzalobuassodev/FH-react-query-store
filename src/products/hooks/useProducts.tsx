@@ -11,11 +11,11 @@ export const useProducts = ({ filterKey }: Options) => {
 		isError,
 		error,
 		data: products,
-    isFetching,
+		isFetching,
 	} = useQuery({
-		queryKey: ['products', filterKey],
+		queryKey: ['products', { filterKey }],
 		queryFn: () => getProducts({ filterKey }),
-    staleTime: 1000 * 60 * 60
+		staleTime: 1000 * 60 * 60,
 	});
 
 	return {
@@ -23,6 +23,6 @@ export const useProducts = ({ filterKey }: Options) => {
 		isError,
 		isLoading,
 		products,
-    isFetching,
+		isFetching,
 	};
 };

@@ -1,6 +1,6 @@
-import { sleep } from "../../helpers/sleep";
+// import { sleep } from "../../helpers/sleep";
 import { productsApi } from "../api/products.api"
-import { Product } from "../interfaces/product.interface";
+import { Product, ProductLite } from "../interfaces/product.interface";
 
 
 interface GetProductsOptions {
@@ -9,10 +9,9 @@ interface GetProductsOptions {
 
 export const getProducts = async ({ filterKey }: GetProductsOptions): Promise<Product[]> => {
 
-    await sleep(2000);
+    // await sleep(2000);
 
     const category = filterKey ? `category=${filterKey}` : ``;
-    console.log(category)
 
     const { data } = await productsApi.get<Product[]>(`/products?${category}`);
 
@@ -22,8 +21,20 @@ export const getProducts = async ({ filterKey }: GetProductsOptions): Promise<Pr
 
 export const getProductById = async (id: number): Promise<Product> => {
 
-    await sleep(2000);
+    // await sleep(2000);
     const { data } = await productsApi.get<Product>(`/products/${id}`)
 
     return data;
+}
+
+
+
+export const createProduct = async (product: ProductLite): Promise<Product> => {
+    // await sleep(5);
+
+    // throw new Error('Error al crear el producto');
+
+    const { data } = await productsApi.post<Product>(`/products`, product)
+
+    return data
 }

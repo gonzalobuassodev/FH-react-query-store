@@ -1,49 +1,147 @@
-import { Button, Image, Input, Textarea } from "@nextui-org/react";
+import { Button, Image, Input, Textarea } from '@nextui-org/react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { useCreateProduct } from '../hooks/useCreateProduct';
+
+interface FormInput {
+	title: string;
+	price: number;
+	category: string;
+	image: string;
+	description: string;
+}
 
 export const NewProduct = () => {
 
-  
+  const { productMutation } = useCreateProduct();
 
-  return (
-    <div className="w-full flex-col">
-      <h1 className="text-2xl font-bold">Nuevo producto</h1>
+	const { control, handleSubmit, watch } = useForm<FormInput>({
+		defaultValues: {
+			title: 'Teclado',
+			price: 150.02,
+			category: "men's clothing",
+			image: 'https://img.freepik.com/vector-gratis/dibujos-animados-teclado_78370-505.jpg?w=360',
+			description:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore cum rerum magni pariatur consectetur nihil provident numquam explicabo odit, aut illum velit perferendis debitis incidunt a vitae dolorum nostrum iusto.',
+		},
+	});
 
-      <form className="w-full">
+  const newImage = watch('image');
+ 
 
-        <div className="flex justify-around items-center">
-          
-          <div className="flex-col w-[500px]">
+	const onSubmit: SubmitHandler<FormInput> = (data) => {
+    productMutation.mutate(data);
+	};
 
-            <Input className="mt-2" type="text" label="Titulo del producto" />
-            <Input className="mt-2" type="number" label="Precio del producto" />
-            <Input className="mt-2" type="url" label="Url del producto" />
-            <Textarea className="mt-2" label="Descripcion del producto" />
-            <select className="rounded-md p-3 mt-2 bg-gray-800 w-full">
-              <option value="men's clothing">Men's clothing</option>
-              <option value="women's clothing">Women's clothing</option>
-              <option value="jewelery">Jewelery</option>
-              <option value="electronics">Electronics</option>
-            </select>
+	return (
+		<div className="w-full flex-col">
+			<h1 className="text-2xl font-bold">Nuevo producto</h1>
 
-            <br />
-            <Button className="mt-2" color="primary">Crear</Button>
-          </div>
+			<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+				<div className="flex justify-around items-center">
+					<div className="flex-col w-[500px]">
+						<Controller
+							control={control}
+							name="title"
+							rules={{ required: true }}
+							render={({ field }) => (
+								<Input
+									className="mt-2"
+									type="text"
+									label="Titulo del producto"
+									value={field.value}
+									onChange={field.onChange}
+								/>
+							)}
+						/>
 
-          <div className="bg-white rounded-2xl p-10 flex items-center" style={{
-            width: '500px',
-            height: '600px',
-          }}>
+						<Controller
+							control={control}
+							name="price"
+							rules={{ required: true }}
+							render={({ field }) => (
+								<Input
+									className="mt-2"
+									type="text"
+									label="Precio del producto"
+									value={field.value?.toString()}
+									onChange={(e) => field.onChange(+e.target.value)}
+								/>
+							)}
+						/>
 
-            <Image
-              src="https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg"
-            />
-          </div>
-          
-        </div>
+						<Controller
+							control={control}
+							name="image"
+							rules={{ required: true }}
+							render={({ field }) => (
+								<Input
+									className="mt-2"
+									type="text"
+									label="Url del producto"
+									value={field.value}
+									onChange={field.onChange}
+								/>
+							)}
+						/>
 
+						<Controller
+							control={control}
+							name="description"
+							rules={{ required: true }}
+							render={({ field }) => (
+								<Textarea
+									className="mt-2"
+									label="Descripcion del producto"
+									value={field.value}
+									onChange={field.onChange}
+								/>
+							)}
+						/>
 
-      </form>
+						<Controller
+							control={control}
+							name="category"
+							rules={{ required: true }}
+							render={({ field }) => (
+								<select 
+                value={field.value}
+                onChange={field.onChange}
+                className="rounded-md p-3 mt-2 bg-gray-800 w-full">
+									<option value="men's clothing">
+										Men's clothing
+									</option>
+									<option value="women's clothing">
+										Women's clothing
+									</option>
+									<option value="jewelery">Jewelery</option>
+									<option value="electronics">
+										Electronics
+									</option>
+								</select>
+							)}
+						/>
 
-    </div>
-  )
-}
+						<br />
+						<Button type="submit" 
+            isDisabled={productMutation.isPending}
+            className="mt-2" color="primary">
+							{
+                productMutation.isPending ? "Creando..." : "Crear"
+              }
+						</Button>
+					</div>
+
+					<div
+						className="bg-white rounded-2xl p-10 flex items-center"
+						style={{
+							width: '500px',
+							height: '600px',
+						}}
+					>
+						<Image src={newImage} />
+					</div>
+				</div>
+			</form>
+		</div>
+	);
+};

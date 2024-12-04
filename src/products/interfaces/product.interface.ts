@@ -13,3 +13,13 @@ interface Rating {
   rate: number;
   count: number;
 }
+
+export interface ProductLite {
+  id?: number;
+  title?: string;
+  price: number;
+  description?: string;
+  category: string;
+  image?: string;
+  name?: string;
+}
